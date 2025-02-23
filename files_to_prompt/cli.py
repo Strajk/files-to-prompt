@@ -6,6 +6,7 @@ import pathlib
 import click
 
 global_index = 1
+processed_paths = set()
 
 EXT_TO_LANG = {
     "py": "python",
@@ -132,6 +133,9 @@ def process_path(
 
             for file in sorted(files):
                 file_path = os.path.join(root, file)
+                if file_path in processed_paths:
+                    continue
+                processed_paths.add(file_path)
                 try:
                     with open(file_path, "r") as f:
                         print_path(
@@ -269,9 +273,10 @@ def cli(
         Contents of file1.py
         ```
     """
-    # Reset global_index for pytest
-    global global_index
+    # Reset globals for pytest
+    global global_index, processed_paths
     global_index = 1
+    processed_paths = set()
 
     # Read paths from stdin if available
     stdin_paths = read_paths_from_stdin(use_null_separator=null)
