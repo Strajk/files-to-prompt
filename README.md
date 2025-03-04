@@ -3,6 +3,7 @@
 ```
 uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt .
 ```
+- Merge #52 - Include SQLite3 schemas, and enabled by default
 - Merge #51 - Prevent duplicate file processing
 - Merge #45 - gitignore implementation based on pathspec
 - Remove GitHub Actions workflow for publishing Python package; update test workflow to limit Python versions to 3.12 and 3.13.
