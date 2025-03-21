@@ -3,7 +3,7 @@
 ```
 uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt .
 ```
-
+- Merge #51 - Prevent duplicate file processing
 - Merge #45 - gitignore implementation based on pathspec
 - Remove GitHub Actions workflow for publishing Python package; update test workflow to limit Python versions to 3.12 and 3.13.
 
@@ -278,4 +278,30 @@ To run the tests:
 
 ```bash
 pytest
+```
+
+### Merging Pull Requests
+
+To merge pull requests, follow these steps:
+
+```bash
+# Checkout the PR to a local branch named after the PR number
+gh pr checkout <PR_NUMBER> --branch pr<PR_NUMBER>
+
+# Rebase the PR branch with main
+git rebase main
+
+# Switch back to main
+git switch main
+
+# Merge the PR using fast-forward only
+git merge pr<PR_NUMBER> --ff-only
+```
+
+For example, to merge PR #51:
+```bash
+gh pr checkout 51 --branch pr51
+git rebase main
+git switch main
+git merge pr51 --ff-only
 ```
