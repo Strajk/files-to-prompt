@@ -1,3 +1,13 @@
+# Fork info
+
+```
+uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt .
+```
+
+- Merge #45 - gitignore implementation based on pathspec
+- Remove GitHub Actions workflow for publishing Python package; update test workflow to limit Python versions to 3.12 and 3.13.
+
+
 # files-to-prompt
 
 [![PyPI](https://img.shields.io/pypi/v/files-to-prompt.svg)](https://pypi.org/project/files-to-prompt/)

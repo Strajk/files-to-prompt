@@ -1,0 +1,850 @@
+<section id="api">
+  <h1>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h1>
+  <section id="module-pathspec">
+  <span id="pathspec"></span><h2>pathspec<a class="headerlink" href="#module-pathspec" title="Link to this heading">¶</a></h2>
+  <p>The <em>pathspec</em> package provides pattern matching for file paths. So far
+  this only includes Git’s wildmatch pattern matching (the style used for
+  “.gitignore” files).</p>
+  <p>The following classes are imported and made available from the root of
+  the <cite>pathspec</cite> package:</p>
+  <ul class="simple">
+  <li><p><a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.gitignore.GitIgnoreSpec</span></code></a></p></li>
+  <li><p><a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.pathspec.PathSpec</span></code></a></p></li>
+  <li><p><a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.pattern.Pattern</span></code></a></p></li>
+  <li><p><a class="reference internal" href="#pathspec.pattern.RegexPattern" title="pathspec.pattern.RegexPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.pattern.RegexPattern</span></code></a></p></li>
+  <li><p><a class="reference internal" href="#pathspec.util.RecursionError" title="pathspec.util.RecursionError"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.util.RecursionError</span></code></a></p></li>
+  </ul>
+  <p>The following functions are also imported:</p>
+  <ul class="simple">
+  <li><p><a class="reference internal" href="#pathspec.util.lookup_pattern" title="pathspec.util.lookup_pattern"><code class="py-func xref py docutils literal notranslate"><span class="pre">pathspec.util.lookup_pattern()</span></code></a></p></li>
+  </ul>
+  <p>The following deprecated functions are also imported to maintain
+  backward compatibility:</p>
+  <ul class="simple">
+  <li><p><a class="reference internal" href="#pathspec.util.iter_tree" title="pathspec.util.iter_tree"><code class="py-func xref py docutils literal notranslate"><span class="pre">pathspec.util.iter_tree()</span></code></a> which is an alias for
+  <a class="reference internal" href="#pathspec.util.iter_tree_files" title="pathspec.util.iter_tree_files"><code class="py-func xref py docutils literal notranslate"><span class="pre">pathspec.util.iter_tree_files()</span></code></a>.</p></li>
+  <li><p><a class="reference internal" href="#pathspec.util.match_files" title="pathspec.util.match_files"><code class="py-func xref py docutils literal notranslate"><span class="pre">pathspec.util.match_files()</span></code></a></p></li>
+  </ul>
+  </section>
+  <section id="module-pathspec.pathspec">
+  <span id="pathspec-pathspec"></span><h2>pathspec.pathspec<a class="headerlink" href="#module-pathspec.pathspec" title="Link to this heading">¶</a></h2>
+  <p>This module provides an object oriented interface for pattern matching of files.</p>
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.pathspec.</span></span><span class="sig-name descname"><span class="pre">PathSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">object</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathSpec</span></code></a> class is a wrapper around a list of compiled
+  <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a> instances.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.__init__">
+  <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.__init__" title="Link to this definition">¶</a></dt>
+  <dd><p>Initializes the <a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathSpec</span></code></a> instance.</p>
+  <p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a>)
+  yields each compiled pattern (<a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.patterns">
+  <span class="sig-name descname"><span class="pre">patterns</span></span><a class="headerlink" href="#pathspec.pathspec.PathSpec.patterns" title="Link to this definition">¶</a></dt>
+  <dd><p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>)
+  contains the compiled patterns.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.__eq__">
+  <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.__eq__" title="Link to this definition">¶</a></dt>
+  <dd><p>Tests the equality of this path-spec with <em>other</em> (<a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathSpec</span></code></a>)
+  by comparing their <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">patterns</span></code></a> attributes.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.__len__">
+  <span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.__len__" title="Link to this definition">¶</a></dt>
+  <dd><p>Returns the number of compiled patterns this path-spec contains
+  (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">int</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.check_file">
+  <span class="sig-name descname"><span class="pre">check_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.check_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.check_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Check the files against this path-spec.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the file path to be
+  matched against <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.patterns</span></code></a>.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally contains the path separators to normalize. See
+  <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p>Returns the file check result (<a class="reference internal" href="#pathspec.util.CheckResult" title="pathspec.util.CheckResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">CheckResult</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.check_files">
+  <span class="sig-name descname"><span class="pre">check_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.check_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.check_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Check the files against this path-spec.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) contains the file paths to be checked against
+  <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.patterns</span></code></a>.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally contains the path separators to normalize. See
+  <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> yielding each file check
+  result (<a class="reference internal" href="#pathspec.util.CheckResult" title="pathspec.util.CheckResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">CheckResult</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.check_tree_files">
+  <span class="sig-name descname"><span class="pre">check_tree_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.check_tree_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.check_tree_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified root path for all files and checks them against this
+  path-spec.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search for files.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally
+  is the error handler for file-system exceptions. It will be called with the
+  exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to abort the walk. Default
+  is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether to walk
+  symbolic links that resolve to directories. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> yielding each file check
+  result (<a class="reference internal" href="#pathspec.util.CheckResult" title="pathspec.util.CheckResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">CheckResult</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.from_lines">
+  <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.from_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.from_lines" title="Link to this definition">¶</a></dt>
+  <dd><p>Compiles the pattern lines.</p>
+  <p><em>pattern_factory</em> can be either the name of a registered pattern factory
+  (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>), or a <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> used to compile
+  patterns. It must accept an uncompiled pattern (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) and return the
+  compiled pattern (<a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>).</p>
+  <p><em>lines</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a>) yields each uncompiled pattern
+  (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>). This simply has to yield each line so that it can be a
+  <a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOBase" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">io.TextIOBase</span></code></a> (e.g., from <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.12)"><code class="py-func xref py docutils literal notranslate"><span class="pre">open()</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>) or
+  the result from <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.splitlines" title="(in Python v3.12)"><code class="py-meth xref py docutils literal notranslate"><span class="pre">str.splitlines()</span></code></a>.</p>
+  <p>Returns the <a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathSpec</span></code></a> instance.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_entries">
+  <span class="sig-name descname"><span class="pre">match_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.match_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_entries" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches the entries to this path-spec.</p>
+  <p><em>entries</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference internal" href="#pathspec.util.TreeEntry" title="pathspec.util.TreeEntry"><code class="py-class xref py docutils literal notranslate"><span class="pre">TreeEntry</span></code></a>)
+  contains the entries to be matched against <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.patterns</span></code></a>.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally contains the path separators to normalize. See
+  <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched entries (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> of
+  <a class="reference internal" href="#pathspec.util.TreeEntry" title="pathspec.util.TreeEntry"><code class="py-class xref py docutils literal notranslate"><span class="pre">TreeEntry</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_file">
+  <span class="sig-name descname"><span class="pre">match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.match_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches the file to this path-spec.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the file path to be
+  matched against <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.patterns</span></code></a>.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>)
+  optionally contains the path separators to normalize. See
+  <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p>Returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a> if <em>file</em> matched; otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_files">
+  <span class="sig-name descname"><span class="pre">match_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.match_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches the files to this path-spec.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) contains the file paths to be matched against
+  <a class="reference internal" href="#pathspec.pathspec.PathSpec.patterns" title="pathspec.pathspec.PathSpec.patterns"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.patterns</span></code></a>.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally contains the path separators to normalize. See
+  <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> of
+  <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_tree_entries">
+  <span class="sig-name descname"><span class="pre">match_tree_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.match_tree_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_tree_entries" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified root path for all files and matches them to this
+  path-spec.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally
+  is the error handler for file-system exceptions. It will be called with the
+  exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to abort the walk. Default
+  is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether to walk
+  symbolic links that resolve to directories. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> of
+  <a class="reference internal" href="#pathspec.util.TreeEntry" title="pathspec.util.TreeEntry"><code class="py-class xref py docutils literal notranslate"><span class="pre">TreeEntry</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_tree_files">
+  <span class="sig-name descname"><span class="pre">match_tree_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pathspec.html#PathSpec.match_tree_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_tree_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified root path for all files and matches them to this
+  path-spec.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search for files.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally
+  is the error handler for file-system exceptions. It will be called with the
+  exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to abort the walk. Default
+  is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether to walk
+  symbolic links that resolve to directories. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of
+  <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pathspec.PathSpec.match_tree">
+  <span class="sig-name descname"><span class="pre">match_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pathspec.pathspec.PathSpec.match_tree" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified root path for all files and matches them to this
+  path-spec.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search for files.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally
+  is the error handler for file-system exceptions. It will be called with the
+  exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to abort the walk. Default
+  is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether to walk
+  symbolic links that resolve to directories. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p><em>negate</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to negate the match
+  results of the patterns. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a pattern matching a file will
+  exclude the file rather than include it. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of
+  <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  </section>
+  <section id="module-pathspec.gitignore">
+  <span id="pathspec-gitignore"></span><h2>pathspec.gitignore<a class="headerlink" href="#module-pathspec.gitignore" title="Link to this heading">¶</a></h2>
+  <p>This module provides <a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitIgnoreSpec</span></code></a> which replicates
+  <em>.gitignore</em> behavior.</p>
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.gitignore.GitIgnoreSpec">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.gitignore.</span></span><span class="sig-name descname"><span class="pre">GitIgnoreSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/gitignore.html#GitIgnoreSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.gitignore.GitIgnoreSpec" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathSpec</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitIgnoreSpec</span></code></a> class extends <a class="reference internal" href="#pathspec.pathspec.PathSpec" title="pathspec.pathspec.PathSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.pathspec.PathSpec</span></code></a> to
+  replicate <em>.gitignore</em> behavior.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.gitignore.GitIgnoreSpec.__eq__">
+  <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/gitignore.html#GitIgnoreSpec.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.gitignore.GitIgnoreSpec.__eq__" title="Link to this definition">¶</a></dt>
+  <dd><p>Tests the equality of this gitignore-spec with <em>other</em> (<a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitIgnoreSpec</span></code></a>)
+  by comparing their <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-attr xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>
+  attributes. A non-<a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitIgnoreSpec</span></code></a> will not compare equal.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.gitignore.GitIgnoreSpec.from_lines">
+  <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_factory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/gitignore.html#GitIgnoreSpec.from_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.gitignore.GitIgnoreSpec.from_lines" title="Link to this definition">¶</a></dt>
+  <dd><p>Compiles the pattern lines.</p>
+  <p><em>lines</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a>) yields each uncompiled
+  pattern (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>). This simply has to yield each line so it can
+  be a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOBase" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">io.TextIOBase</span></code></a> (e.g., from <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.12)"><code class="py-func xref py docutils literal notranslate"><span class="pre">open()</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>) or the result from <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.splitlines" title="(in Python v3.12)"><code class="py-meth xref py docutils literal notranslate"><span class="pre">str.splitlines()</span></code></a>.</p>
+  <p><em>pattern_factory</em> can be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>, the name of a registered
+  pattern factory (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>), or a <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a>
+  used to compile patterns. The callable must accept an uncompiled
+  pattern (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) and return the compiled pattern
+  (<a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathspec.pattern.Pattern</span></code></a>).
+  Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference internal" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern" title="pathspec.patterns.gitwildmatch.GitWildMatchPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitWildMatchPattern</span></code></a>).</p>
+  <p>Returns the <a class="reference internal" href="#pathspec.gitignore.GitIgnoreSpec" title="pathspec.gitignore.GitIgnoreSpec"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitIgnoreSpec</span></code></a> instance.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  </section>
+  <section id="module-pathspec.pattern">
+  <span id="pathspec-pattern"></span><h2>pathspec.pattern<a class="headerlink" href="#module-pathspec.pattern" title="Link to this heading">¶</a></h2>
+  <p>This module provides the base definition for patterns.</p>
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.pattern.Pattern">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.pattern.</span></span><span class="sig-name descname"><span class="pre">Pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#Pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.Pattern" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">object</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a> class is the abstract definition of a pattern.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.Pattern.__init__">
+  <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#Pattern.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.Pattern.__init__" title="Link to this definition">¶</a></dt>
+  <dd><p>Initializes the <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a> instance.</p>
+  <p><em>include</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether the matched files
+  should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), excluded (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or is a
+  null-operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.pattern.Pattern.include">
+  <span class="sig-name descname"><span class="pre">include</span></span><a class="headerlink" href="#pathspec.pattern.Pattern.include" title="Link to this definition">¶</a></dt>
+  <dd><p><em>include</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether the matched files
+  should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), excluded (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or is a
+  null-operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.Pattern.match">
+  <span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#Pattern.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.Pattern.match" title="Link to this definition">¶</a></dt>
+  <dd><p>DEPRECATED: This method is no longer used and has been replaced by
+  <a class="reference internal" href="#pathspec.pattern.Pattern.match_file" title="pathspec.pattern.Pattern.match_file"><code class="py-meth xref py docutils literal notranslate"><span class="pre">match_file()</span></code></a>. Use the <a class="reference internal" href="#pathspec.pattern.Pattern.match_file" title="pathspec.pattern.Pattern.match_file"><code class="py-meth xref py docutils literal notranslate"><span class="pre">match_file()</span></code></a> method with a loop for
+  similar results.</p>
+  <p>Matches this pattern against the specified files.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains each
+  file relative to the root directory (e.g., <code class="docutils literal notranslate"><span class="pre">"relative/path/to/file"</span></code>).</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> yielding each matched file
+  path (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.Pattern.match_file">
+  <span class="sig-name descname"><span class="pre">match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#Pattern.match_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.Pattern.match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches this pattern against the specified file.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the normalized file path to match against.</p>
+  <p>Returns the match result if <em>file</em> matched; otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.pattern.</span></span><span class="sig-name descname"><span class="pre">RegexPattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexPattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexPattern" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.pattern.RegexPattern" title="pathspec.pattern.RegexPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexPattern</span></code></a> class is an implementation of a pattern using
+  regular expressions.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.__init__">
+  <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexPattern.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexPattern.__init__" title="Link to this definition">¶</a></dt>
+  <dd><p>Initializes the <a class="reference internal" href="#pathspec.pattern.RegexPattern" title="pathspec.pattern.RegexPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexPattern</span></code></a> instance.</p>
+  <p><em>pattern</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>, or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is the pattern to compile into a regular expression.</p>
+  <p><em>include</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) must be <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> unless
+  <em>pattern</em> is a precompiled regular expression (<a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>) in which
+  case it is whether matched files should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), excluded
+  (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or is a null operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  <blockquote>
+  <div><div class="admonition note">
+  <p class="admonition-title">Note</p>
+  <p>Subclasses do not need to support the <em>include</em> parameter.</p>
+  </div>
+  </div></blockquote>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.pattern">
+  <span class="sig-name descname"><span class="pre">pattern</span></span><a class="headerlink" href="#pathspec.pattern.RegexPattern.pattern" title="Link to this definition">¶</a></dt>
+  <dd><p><em>pattern</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>, or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is the uncompiled, input pattern. This is for reference.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.regex">
+  <span class="sig-name descname"><span class="pre">regex</span></span><a class="headerlink" href="#pathspec.pattern.RegexPattern.regex" title="Link to this definition">¶</a></dt>
+  <dd><p><em>regex</em> (<a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>) is the regular expression for the pattern.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.__eq__">
+  <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexPattern.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexPattern.__eq__" title="Link to this definition">¶</a></dt>
+  <dd><p>Tests the equality of this regex pattern with <em>other</em> (<a class="reference internal" href="#pathspec.pattern.RegexPattern" title="pathspec.pattern.RegexPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexPattern</span></code></a>)
+  by comparing their <a class="reference internal" href="#pathspec.pattern.Pattern.include" title="pathspec.pattern.Pattern.include"><code class="py-attr xref py docutils literal notranslate"><span class="pre">include</span></code></a> and <a class="reference internal" href="#pathspec.pattern.RegexPattern.regex" title="pathspec.pattern.RegexPattern.regex"><code class="py-attr xref py docutils literal notranslate"><span class="pre">regex</span></code></a>
+  attributes.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.match_file">
+  <span class="sig-name descname"><span class="pre">match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexPattern.match_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexPattern.match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches this pattern against the specified file.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains each file relative to the root directory
+  (e.g., “relative/path/to/file”).</p>
+  <p>Returns the match result (<a class="reference internal" href="#pathspec.pattern.RegexMatchResult" title="pathspec.pattern.RegexMatchResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexMatchResult</span></code></a>) if <em>file</em> matched;
+  otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexPattern.pattern_to_regex">
+  <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pattern_to_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexPattern.pattern_to_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexPattern.pattern_to_regex" title="Link to this definition">¶</a></dt>
+  <dd><p>Convert the pattern into an uncompiled regular expression.</p>
+  <p><em>pattern</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the pattern to convert into a regular
+  expression.</p>
+  <p>Returns the uncompiled regular expression (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>),
+  and whether matched files should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), excluded
+  (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or is a null-operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  <blockquote>
+  <div><div class="admonition note">
+  <p class="admonition-title">Note</p>
+  <p>The default implementation simply returns <em>pattern</em> and
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  </div>
+  </div></blockquote>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexMatchResult">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.pattern.</span></span><span class="sig-name descname"><span class="pre">RegexMatchResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/pattern.html#RegexMatchResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.pattern.RegexMatchResult" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">object</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.pattern.RegexMatchResult" title="pathspec.pattern.RegexMatchResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexMatchResult</span></code></a> data class is used to return information about
+  the matched regular expression.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexMatchResult.__init__">
+  <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pathspec.pattern.RegexMatchResult.__init__" title="Link to this definition">¶</a></dt>
+  <dd></dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.pattern.RegexMatchResult.match">
+  <span class="sig-name descname"><span class="pre">match</span></span><a class="headerlink" href="#pathspec.pattern.RegexMatchResult.match" title="Link to this definition">¶</a></dt>
+  <dd><p><em>match</em> (<a class="reference external" href="https://docs.python.org/3/library/re.html#re.Match" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Match</span></code></a>) is the regex match result.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  </section>
+  <section id="module-pathspec.patterns.gitwildmatch">
+  <span id="pathspec-patterns-gitwildmatch"></span><h2>pathspec.patterns.gitwildmatch<a class="headerlink" href="#module-pathspec.patterns.gitwildmatch" title="Link to this heading">¶</a></h2>
+  <p>This module implements Git’s wildmatch pattern matching which itself is derived
+  from Rsync’s wildmatch. Git uses wildmatch for its “.gitignore” files.</p>
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.patterns.gitwildmatch.</span></span><span class="sig-name descname"><span class="pre">GitWildMatchPattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/patterns/gitwildmatch.html#GitWildMatchPattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference internal" href="#pathspec.pattern.RegexPattern" title="pathspec.pattern.RegexPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexPattern</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern" title="pathspec.patterns.gitwildmatch.GitWildMatchPattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">GitWildMatchPattern</span></code></a> class represents a compiled Git wildmatch
+  pattern.</p>
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.pattern_to_regex">
+  <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pattern_to_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/patterns/gitwildmatch.html#GitWildMatchPattern.pattern_to_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.pattern_to_regex" title="Link to this definition">¶</a></dt>
+  <dd><p>Convert the pattern into a regular expression.</p>
+  <p><em>pattern</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>) is the pattern to convert into a
+  regular expression.</p>
+  <p>Returns the uncompiled regular expression (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>, or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>); and whether matched files should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>),
+  excluded (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or if it is a null-operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.escape">
+  <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">escape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/patterns/gitwildmatch.html#GitWildMatchPattern.escape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.escape" title="Link to this definition">¶</a></dt>
+  <dd><p>Escape special characters in the given string.</p>
+  <p><em>s</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>) a filename or a string that you want to
+  escape, usually before adding it to a “.gitignore”.</p>
+  <p>Returns the escaped string (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.include">
+  <span class="sig-name descname"><span class="pre">include</span></span><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.include" title="Link to this definition">¶</a></dt>
+  <dd><p><em>include</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether the matched files
+  should be included (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), excluded (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>), or is a
+  null-operation (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.match">
+  <span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.match" title="Link to this definition">¶</a></dt>
+  <dd><p>DEPRECATED: This method is no longer used and has been replaced by
+  <a class="reference internal" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file" title="pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file"><code class="py-meth xref py docutils literal notranslate"><span class="pre">match_file()</span></code></a>. Use the <a class="reference internal" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file" title="pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file"><code class="py-meth xref py docutils literal notranslate"><span class="pre">match_file()</span></code></a> method with a loop for
+  similar results.</p>
+  <p>Matches this pattern against the specified files.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains each
+  file relative to the root directory (e.g., <code class="docutils literal notranslate"><span class="pre">"relative/path/to/file"</span></code>).</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> yielding each matched file
+  path (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file">
+  <span class="sig-name descname"><span class="pre">match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches this pattern against the specified file.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains each file relative to the root directory
+  (e.g., “relative/path/to/file”).</p>
+  <p>Returns the match result (<a class="reference internal" href="#pathspec.pattern.RegexMatchResult" title="pathspec.pattern.RegexMatchResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">RegexMatchResult</span></code></a>) if <em>file</em> matched;
+  otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.pattern">
+  <span class="sig-name descname"><span class="pre">pattern</span></span><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.pattern" title="Link to this definition">¶</a></dt>
+  <dd><p><em>pattern</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>, or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is the uncompiled, input pattern. This is for reference.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.patterns.gitwildmatch.GitWildMatchPattern.regex">
+  <span class="sig-name descname"><span class="pre">regex</span></span><a class="headerlink" href="#pathspec.patterns.gitwildmatch.GitWildMatchPattern.regex" title="Link to this definition">¶</a></dt>
+  <dd><p><em>regex</em> (<a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">re.Pattern</span></code></a>) is the regular expression for the pattern.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  </section>
+  <section id="module-pathspec.util">
+  <span id="pathspec-util"></span><h2>pathspec.util<a class="headerlink" href="#module-pathspec.util" title="Link to this heading">¶</a></h2>
+  <p>This module provides utility methods for dealing with path-specs.</p>
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.util.TStrPath">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">TStrPath</span></span><a class="headerlink" href="#pathspec.util.TStrPath" title="Link to this definition">¶</a></dt>
+  <dd><p>Type variable for <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>.</p>
+  <p>alias of TypeVar(‘TStrPath’, bound=<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><code class="py-obj xref py docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">PathLike</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>]])</p>
+  </dd></dl>
+  
+  <dl class="py data">
+  <dt class="sig sig-object py" id="pathspec.util.NORMALIZE_PATH_SEPS">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">NORMALIZE_PATH_SEPS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#pathspec.util.NORMALIZE_PATH_SEPS" title="Link to this definition">¶</a></dt>
+  <dd><p><em>NORMALIZE_PATH_SEPS</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains the path
+  separators that need to be normalized to the POSIX separator for the
+  current operating system. The separators are determined by examining
+  <a class="reference external" href="https://docs.python.org/3/library/os.html#os.sep" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">os.sep</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/os.html#os.altsep" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">os.altsep</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.append_dir_sep">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">append_dir_sep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#append_dir_sep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.append_dir_sep" title="Link to this definition">¶</a></dt>
+  <dd><p>Appends the path separator to the path if the path is a directory.
+  This can be used to aid in distinguishing between directories and
+  files on the file-system by relying on the presence of a trailing path
+  separator.</p>
+  <p><em>path</em> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>) is the path to use.</p>
+  <p>Returns the path (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.check_match_file">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">check_match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#check_match_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.check_match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Check the file against the patterns.</p>
+  <p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a>) yields each indexed pattern
+  (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">tuple</span></code></a>) which contains the pattern index (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">int</span></code></a>) and actual
+  pattern (<a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>).</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the normalized file path to be matched
+  against <em>patterns</em>.</p>
+  <p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">tuple</span></code></a> containing whether to include <em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a>
+  or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>), and the index of the last matched pattern (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">int</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.detailed_match_files">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">detailed_match_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_matches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#detailed_match_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.detailed_match_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches the files to the patterns, and returns which patterns matched
+  the files.</p>
+  <p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>)
+  contains the patterns to use.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains
+  the normalized file paths to be matched against <em>patterns</em>.</p>
+  <p><em>all_matches</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to return all
+  matches patterns (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), or only the last matched pattern
+  (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>). Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">dict</span></code></a>) which maps each matched file
+  (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) to the patterns that matched in order (<a class="reference internal" href="#pathspec.util.MatchDetail" title="pathspec.util.MatchDetail"><code class="py-class xref py docutils literal notranslate"><span class="pre">MatchDetail</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.iter_tree_entries">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">iter_tree_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#iter_tree_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.iter_tree_entries" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified directory for all files and directories.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>)
+  optionally is the error handler for file-system exceptions. It will be
+  called with the exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to
+  abort the walk. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system
+  exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether
+  to walk symbolic links that resolve to directories. Default is
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p>Raises <a class="reference internal" href="#pathspec.util.RecursionError" title="pathspec.util.RecursionError"><code class="py-exc xref py docutils literal notranslate"><span class="pre">RecursionError</span></code></a> if recursion is detected.</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> yielding each file or
+  directory entry (<a class="reference internal" href="#pathspec.util.TreeEntry" title="pathspec.util.TreeEntry"><code class="py-class xref py docutils literal notranslate"><span class="pre">TreeEntry</span></code></a>) relative to <em>root</em>.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.iter_tree_files">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">iter_tree_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#iter_tree_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.iter_tree_files" title="Link to this definition">¶</a></dt>
+  <dd><p>Walks the specified directory for all files.</p>
+  <p><em>root</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the root directory to
+  search for files.</p>
+  <p><em>on_error</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>)
+  optionally is the error handler for file-system exceptions. It will be
+  called with the exception (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">OSError</span></code></a>). Reraise the exception to
+  abort the walk. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> to ignore file-system
+  exceptions.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether
+  to walk symbolic links that resolve to directories. Default is
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p>Raises <a class="reference internal" href="#pathspec.util.RecursionError" title="pathspec.util.RecursionError"><code class="py-exc xref py docutils literal notranslate"><span class="pre">RecursionError</span></code></a> if recursion is detected.</p>
+  <p>Returns an <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterator</span></code></a> yielding the path to
+  each file (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) relative to <em>root</em>.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.iter_tree">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">iter_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#iter_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.iter_tree" title="Link to this definition">¶</a></dt>
+  <dd><p>DEPRECATED: The <a class="reference internal" href="#pathspec.util.iter_tree" title="pathspec.util.iter_tree"><code class="py-func xref py docutils literal notranslate"><span class="pre">iter_tree()</span></code></a> function is an alias for the
+  <a class="reference internal" href="#pathspec.util.iter_tree_files" title="pathspec.util.iter_tree_files"><code class="py-func xref py docutils literal notranslate"><span class="pre">iter_tree_files()</span></code></a> function.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.lookup_pattern">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">lookup_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#lookup_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.lookup_pattern" title="Link to this definition">¶</a></dt>
+  <dd><p>Lookups a registered pattern factory by name.</p>
+  <p><em>name</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the name of the pattern factory.</p>
+  <p>Returns the registered pattern factory (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a>).
+  If no pattern factory is registered, raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.12)"><code class="py-exc xref py docutils literal notranslate"><span class="pre">KeyError</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.match_file">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">match_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#match_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.match_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Matches the file to the patterns.</p>
+  <p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>)
+  contains the patterns to use.</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the normalized file path to be matched
+  against <em>patterns</em>.</p>
+  <p>Returns <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a> if <em>file</em> matched; otherwise, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.match_files">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">match_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#match_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.match_files" title="Link to this definition">¶</a></dt>
+  <dd><p>DEPRECATED: This is an old function no longer used. Use the
+  <a class="reference internal" href="#pathspec.util.match_file" title="pathspec.util.match_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">match_file()</span></code></a> function with a loop for better results.</p>
+  <p>Matches the files to the patterns.</p>
+  <p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>)
+  contains the patterns to use.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) contains
+  the normalized file paths to be matched against <em>patterns</em>.</p>
+  <p>Returns the matched files (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">set</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.normalize_file">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">normalize_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#normalize_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.normalize_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Normalizes the file path to use the POSIX path separator (i.e.,
+  <code class="docutils literal notranslate"><span class="pre">"/"</span></code>), and make the paths relative (remove leading <code class="docutils literal notranslate"><span class="pre">"/"</span></code>).</p>
+  <p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the file path.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <code class="docutils literal notranslate"><span class="pre">None</span></code>) optionally contains the path separators to normalize.
+  This does not need to include the POSIX path separator (<code class="docutils literal notranslate"><span class="pre">"/"</span></code>),
+  but including it will not affect the results. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+  for <code class="docutils literal notranslate"><span class="pre">NORMALIZE_PATH_SEPS</span></code>. To prevent normalization, pass an
+  empty container (e.g., an empty tuple <code class="docutils literal notranslate"><span class="pre">()</span></code>).</p>
+  <p>Returns the normalized file path (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.normalize_files">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">normalize_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#normalize_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.normalize_files" title="Link to this definition">¶</a></dt>
+  <dd><p>DEPRECATED: This function is no longer used. Use the <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a>
+  function with a loop for better results.</p>
+  <p>Normalizes the file paths to use the POSIX path separator.</p>
+  <p><em>files</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Iterable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) contains the file paths to be normalized.</p>
+  <p><em>separators</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Collection</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>; or
+  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally contains the path separators to normalize.
+  See <a class="reference internal" href="#pathspec.util.normalize_file" title="pathspec.util.normalize_file"><code class="py-func xref py docutils literal notranslate"><span class="pre">normalize_file()</span></code></a> for more information.</p>
+  <p>Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">dict</span></code></a> mapping each normalized file path (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>)
+  to the original file paths (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or
+  <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py function">
+  <dt class="sig sig-object py" id="pathspec.util.register_pattern">
+  <span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">register_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_factory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#register_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.register_pattern" title="Link to this definition">¶</a></dt>
+  <dd><p>Registers the specified pattern factory.</p>
+  <p><em>name</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the name to register the pattern factory
+  under.</p>
+  <p><em>pattern_factory</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a>) is used to
+  compile patterns. It must accept an uncompiled pattern (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>)
+  and return the compiled pattern (<a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>).</p>
+  <p><em>override</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) optionally is whether to
+  allow overriding an already registered pattern under the same name
+  (<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>), instead of raising an <a class="reference internal" href="#pathspec.util.AlreadyRegisteredError" title="pathspec.util.AlreadyRegisteredError"><code class="py-exc xref py docutils literal notranslate"><span class="pre">AlreadyRegisteredError</span></code></a>
+  (<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>). Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py exception">
+  <dt class="sig sig-object py" id="pathspec.util.AlreadyRegisteredError">
+  <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">AlreadyRegisteredError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#AlreadyRegisteredError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.AlreadyRegisteredError" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.util.AlreadyRegisteredError" title="pathspec.util.AlreadyRegisteredError"><code class="py-exc xref py docutils literal notranslate"><span class="pre">AlreadyRegisteredError</span></code></a> exception is raised when a pattern
+  factory is registered under a name already in use.</p>
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.AlreadyRegisteredError.message">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#pathspec.util.AlreadyRegisteredError.message" title="Link to this definition">¶</a></dt>
+  <dd><p><em>message</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the error message.</p>
+  </dd></dl>
+  
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.AlreadyRegisteredError.name">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pathspec.util.AlreadyRegisteredError.name" title="Link to this definition">¶</a></dt>
+  <dd><p><em>name</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the name of the registered pattern.</p>
+  </dd></dl>
+  
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.AlreadyRegisteredError.pattern_factory">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pattern_factory</span></span><a class="headerlink" href="#pathspec.util.AlreadyRegisteredError.pattern_factory" title="Link to this definition">¶</a></dt>
+  <dd><p><em>pattern_factory</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Callable</span></code></a>) is the
+  registered pattern factory.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py exception">
+  <dt class="sig sig-object py" id="pathspec.util.RecursionError">
+  <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">RecursionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#RecursionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.RecursionError" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.util.RecursionError" title="pathspec.util.RecursionError"><code class="py-exc xref py docutils literal notranslate"><span class="pre">RecursionError</span></code></a> exception is raised when recursion is
+  detected.</p>
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.RecursionError.first_path">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">first_path</span></span><a class="headerlink" href="#pathspec.util.RecursionError.first_path" title="Link to this definition">¶</a></dt>
+  <dd><p><em>first_path</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the first path encountered for
+  <a class="reference internal" href="#pathspec.util.RecursionError.real_path" title="pathspec.util.RecursionError.real_path"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.real_path</span></code></a>.</p>
+  </dd></dl>
+  
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.RecursionError.message">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#pathspec.util.RecursionError.message" title="Link to this definition">¶</a></dt>
+  <dd><p><em>message</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the error message.</p>
+  </dd></dl>
+  
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.RecursionError.real_path">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">real_path</span></span><a class="headerlink" href="#pathspec.util.RecursionError.real_path" title="Link to this definition">¶</a></dt>
+  <dd><p><em>real_path</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the real path that recursion was
+  encountered on.</p>
+  </dd></dl>
+  
+  <dl class="py property">
+  <dt class="sig sig-object py" id="pathspec.util.RecursionError.second_path">
+  <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">second_path</span></span><a class="headerlink" href="#pathspec.util.RecursionError.second_path" title="Link to this definition">¶</a></dt>
+  <dd><p><em>second_path</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the second path encountered for
+  <a class="reference internal" href="#pathspec.util.RecursionError.real_path" title="pathspec.util.RecursionError.real_path"><code class="py-attr xref py docutils literal notranslate"><span class="pre">self.real_path</span></code></a>.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.util.CheckResult">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">CheckResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#CheckResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.CheckResult" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Generic</span></code></a>[<a class="reference internal" href="#pathspec.util.TStrPath" title="pathspec.util.TStrPath"><code class="py-obj xref py docutils literal notranslate"><span class="pre">TStrPath</span></code></a>]</p>
+  <p>The <a class="reference internal" href="#pathspec.util.CheckResult" title="pathspec.util.CheckResult"><code class="py-class xref py docutils literal notranslate"><span class="pre">CheckResult</span></code></a> class contains information about the file and which
+  pattern matched it.</p>
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.CheckResult.file">
+  <span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#pathspec.util.CheckResult.file" title="Link to this definition">¶</a></dt>
+  <dd><p><em>file</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) is the file path.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.CheckResult.include">
+  <span class="sig-name descname"><span class="pre">include</span></span><a class="headerlink" href="#pathspec.util.CheckResult.include" title="Link to this definition">¶</a></dt>
+  <dd><p><em>include</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to include or exclude the
+  file. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>, no pattern matched.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.CheckResult.index">
+  <span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#pathspec.util.CheckResult.index" title="Link to this definition">¶</a></dt>
+  <dd><p><em>index</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is the index of the last pattern that
+  matched. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>, no pattern matched.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.util.MatchDetail">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">MatchDetail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#MatchDetail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.MatchDetail" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">object</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.util.MatchDetail" title="pathspec.util.MatchDetail"><code class="py-class xref py docutils literal notranslate"><span class="pre">MatchDetail</span></code></a> class contains information about</p>
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.MatchDetail.patterns">
+  <span class="sig-name descname"><span class="pre">patterns</span></span><a class="headerlink" href="#pathspec.util.MatchDetail.patterns" title="Link to this definition">¶</a></dt>
+  <dd><p><em>patterns</em> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">Sequence</span></code></a> of <a class="reference internal" href="#pathspec.pattern.Pattern" title="pathspec.pattern.Pattern"><code class="py-class xref py docutils literal notranslate"><span class="pre">Pattern</span></code></a>)
+  contains the patterns that matched the file in the order they were
+  encountered.</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  <dl class="py class">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry">
+  <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pathspec.util.</span></span><span class="sig-name descname"><span class="pre">TreeEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lstat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#TreeEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.TreeEntry" title="Link to this definition">¶</a></dt>
+  <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">object</span></code></a></p>
+  <p>The <a class="reference internal" href="#pathspec.util.TreeEntry" title="pathspec.util.TreeEntry"><code class="py-class xref py docutils literal notranslate"><span class="pre">TreeEntry</span></code></a> class contains information about a file-system
+  entry.</p>
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.name">
+  <span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pathspec.util.TreeEntry.name" title="Link to this definition">¶</a></dt>
+  <dd><p><em>name</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the base name of the entry.</p>
+  </dd></dl>
+  
+  <dl class="py attribute">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.path">
+  <span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#pathspec.util.TreeEntry.path" title="Link to this definition">¶</a></dt>
+  <dd><p><em>path</em> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">str</span></code></a>) is the path of the entry.</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.is_dir">
+  <span class="sig-name descname"><span class="pre">is_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#TreeEntry.is_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.TreeEntry.is_dir" title="Link to this definition">¶</a></dt>
+  <dd><p>Get whether the entry is a directory.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to follow
+  symbolic links. If this is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a symlink to a directory
+  will result in <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p>Returns whether the entry is a directory (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.is_file">
+  <span class="sig-name descname"><span class="pre">is_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#TreeEntry.is_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.TreeEntry.is_file" title="Link to this definition">¶</a></dt>
+  <dd><p>Get whether the entry is a regular file.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to follow
+  symbolic links. If this is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, a symlink to a regular file
+  will result in <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p>Returns whether the entry is a regular file (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.is_symlink">
+  <span class="sig-name descname"><span class="pre">is_symlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#TreeEntry.is_symlink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.TreeEntry.is_symlink" title="Link to this definition">¶</a></dt>
+  <dd><p>Returns whether the entry is a symbolic link (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+  </dd></dl>
+  
+  <dl class="py method">
+  <dt class="sig sig-object py" id="pathspec.util.TreeEntry.stat">
+  <span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">follow_links</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pathspec/util.html#TreeEntry.stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pathspec.util.TreeEntry.stat" title="Link to this definition">¶</a></dt>
+  <dd><p>Get the cached stat result for the entry.</p>
+  <p><em>follow_links</em> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">bool</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a>) is whether to follow
+  symbolic links. If this is <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>, the stat result of the
+  linked file will be returned. Default is <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">None</span></code></a> for <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="py-data xref py docutils literal notranslate"><span class="pre">True</span></code></a>.</p>
+  <p>Returns that stat result (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.stat_result" title="(in Python v3.12)"><code class="py-class xref py docutils literal notranslate"><span class="pre">os.stat_result</span></code></a>).</p>
+  </dd></dl>
+  
+  </dd></dl>
+  
+  </section>
+  </section>
