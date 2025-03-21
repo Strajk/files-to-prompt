@@ -86,25 +86,9 @@ def process_path(
     writer,
     line_numbers=False,
     extract_sqlite=True,
-):
-    if os.path.isfile(path):
-        if extract_sqlite and is_sqlite3_file(path):
-            try:
-                schema = get_sqlite_schema(path)
-                content = f"-- SQLite3 Database Schema\n{schema}"
-                print_document(writer, path, content, line_numbers)
-            except Exception as e:
-                warning_message = f"Warning: Error processing SQLite file {path}: {str(e)}"
-                click.echo(click.style(warning_message, fg="red"), err=True)
-        else:
-            try:
-                with open(path, "r") as f:
-                    print_document(writer, path, f.read(), line_numbers)
-            except UnicodeDecodeError:
-                warning_message = f"Warning: Skipping file {path} due to UnicodeDecodeError"
-                click.echo(click.style(warning_message, fg="red"), err=True)
-    elif os.path.isdir(path):
-        all_files = []
+): 
+    all_files = [path] if os.path.isfile(path) else []
+    if os.path.isdir(path):
         for root, dirs, files in os.walk(path):
             if not include_hidden:
                 dirs[:] = [d for d in dirs if not d.startswith(".")]
@@ -140,24 +124,24 @@ def process_path(
                 if file_path not in processed_paths:
                     all_files.append(file_path)
 
-        # Sort files to ensure consistent order
-        for file_path in sorted(all_files):
-            processed_paths.add(file_path)
-            if extract_sqlite and is_sqlite3_file(file_path):
-                try:
-                    schema = get_sqlite_schema(file_path)
-                    content = f"-- SQLite3 Database Schema\n{schema}"
-                    print_document(writer, file_path, content, line_numbers)
-                except Exception as e:
-                    warning_message = f"Warning: Error processing SQLite file {file_path}: {str(e)}"
-                    click.echo(click.style(warning_message, fg="red"), err=True)
-            else:
-                try:
-                    with open(file_path, "r") as f:
-                        print_document(writer, file_path, f.read(), line_numbers)
-                except UnicodeDecodeError:
-                    warning_message = f"Warning: Skipping file {file_path} due to UnicodeDecodeError"
-                    click.echo(click.style(warning_message, fg="red"), err=True)
+    # Sort files to ensure consistent order
+    for file_path in sorted(all_files):
+        processed_paths.add(file_path)
+        if extract_sqlite and is_sqlite3_file(file_path):
+            try:
+                schema = get_sqlite_schema(file_path)
+                content = f"-- SQLite3 Database Schema\n{schema}"
+                print_document(writer, file_path, content, line_numbers)
+            except Exception as e:
+                warning_message = f"Warning: Error processing SQLite file {file_path}: {str(e)}"
+                click.echo(click.style(warning_message, fg="red"), err=True)
+        else:
+            try:
+                with open(file_path, "r") as f:
+                    print_document(writer, file_path, f.read(), line_numbers)
+            except UnicodeDecodeError:
+                warning_message = f"Warning: Skipping file {file_path} due to UnicodeDecodeError"
+                click.echo(click.style(warning_message, fg="red"), err=True)
 
 def read_paths_from_stdin(use_null_separator):
     if sys.stdin.isatty():
