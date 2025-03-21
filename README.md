@@ -1,7 +1,7 @@
 # Fork info
 
 ```
-uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt .
+uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt-strajk .
 ```
 
 ```
