@@ -408,7 +408,7 @@ def cli(
             line_numbers,
             extract_sqlite,
         )
-    if claude_xml:
+    if claude_xml and len(paths) > 0:
         writer("</documents>")
     if fp:
         fp.close()
