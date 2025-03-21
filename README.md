@@ -3,6 +3,11 @@
 ```
 uvx --with git+https://github.com/strajk/files-to-prompt files-to-prompt .
 ```
+
+```
+uv run -m files_to_prompt.cli .
+```
+- Drop markdown output support, keep only CXML
 - Merge #54 - Fix Claude XML for empty paths case
 - Merge #52 - Include SQLite3 schemas, and enabled by default
 - Merge #51 - Prevent duplicate file processing
@@ -68,18 +73,6 @@ This will output the contents of every file, with each file preceded by its rela
 
   ```bash
   files-to-prompt path/to/directory --ignore-gitignore
-  ```
-
-- `-c/--cxml`: Output in Claude XML format.
-
-  ```bash
-  files-to-prompt path/to/directory --cxml
-  ```
-
-- `-m/--markdown`: Output as Markdown with fenced code blocks.
-
-  ```bash
-  files-to-prompt path/to/directory --markdown
   ```
 
 - `-o/--output <file>`: Write the output to a file instead of printing it to the console.
@@ -203,107 +196,20 @@ You can mix and match paths from command line arguments and stdin:
 find . -mtime -1 | files-to-prompt README.md
 ```
 
-### Claude XML Output
+### Semi "Claude" XML Output
 
 Anthropic has provided [specific guidelines](https://docs.anthropic.com/claude/docs/long-context-window-tips) for optimally structuring prompts to take advantage of Claude's extended context window.
 
-To structure the output in this way, use the optional `--cxml` flag, which will produce output like this:
+We tweaked it a little to be more readable for humans.
+
 
 ```xml
 <documents>
-<document index="1">
-<source>my_directory/file1.txt</source>
-<document_content>
+<document path="my_directory/file1.txt" index="1">
 Contents of file1.txt
-</document_content>
 </document>
-<document index="2">
-<source>my_directory/file2.txt</source>
-<document_content>
+<document path="my_directory/file2.txt" index="2">
 Contents of file2.txt
-</document_content>
 </document>
 </documents>
-```
-
-## --markdown fenced code block output
-
-The `--markdown` option will output the files as fenced code blocks, which can be useful for pasting into Markdown documents.
-
-```bash
-files-to-prompt path/to/directory --markdown
-```
-The language tag will be guessed based on the filename.
-
-If the code itself contains triple backticks the wrapper around it will use one additional backtick.
-
-Example output:
-`````
-myfile.py
-```python
-def my_function():
-    return "Hello, world!"
-```
-other.js
-```javascript
-function myFunction() {
-    return "Hello, world!";
-}
-```
-file_with_triple_backticks.md
-````markdown
-This file has its own
-```
-fenced code blocks
-```
-Inside it.
-````
-`````
-
-## Development
-
-To contribute to this tool, first checkout the code. Then create a new virtual environment:
-
-```bash
-cd files-to-prompt
-python -m venv venv
-source venv/bin/activate
-```
-
-Now install the dependencies and test dependencies:
-
-```bash
-pip install -e '.[test]'
-```
-
-To run the tests:
-
-```bash
-pytest
-```
-
-### Merging Pull Requests
-
-To merge pull requests, follow these steps:
-
-```bash
-# Checkout the PR to a local branch named after the PR number
-gh pr checkout <PR_NUMBER> --branch pr<PR_NUMBER>
-
-# Rebase the PR branch with main
-git rebase main
-
-# Switch back to main
-git switch main
-
-# Merge the PR using fast-forward only
-git merge pr<PR_NUMBER> --ff-only
-```
-
-For example, to merge PR #51:
-```bash
-gh pr checkout 51 --branch pr51
-git rebase main
-git switch main
-git merge pr51 --ff-only
 ```

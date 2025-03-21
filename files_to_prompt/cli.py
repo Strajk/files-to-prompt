@@ -9,82 +9,20 @@ import click
 global_index = 1
 processed_paths = set()
 
-EXT_TO_LANG = {
-    "py": "python",
-    "c": "c",
-    "cpp": "cpp",
-    "java": "java",
-    "js": "javascript",
-    "ts": "typescript",
-    "html": "html",
-    "css": "css",
-    "xml": "xml",
-    "json": "json",
-    "yaml": "yaml",
-    "yml": "yaml",
-    "sh": "bash",
-    "rb": "ruby",
-    "sql": "sql",
-    "sqlite": "sql",
-    "sqlite3": "sql",
-    "db": "sql",
-}
-
-
 def add_line_numbers(content):
     lines = content.splitlines()
-
     padding = len(str(len(lines)))
-
     numbered_lines = [f"{i + 1:{padding}}  {line}" for i, line in enumerate(lines)]
     return "\n".join(numbered_lines)
 
-
-def print_path(writer, path, content, cxml, markdown, line_numbers):
-    if cxml:
-        print_as_xml(writer, path, content, line_numbers)
-    elif markdown:
-        print_as_markdown(writer, path, content, line_numbers)
-    else:
-        print_default(writer, path, content, line_numbers)
-
-
-def print_default(writer, path, content, line_numbers):
-    writer(path)
-    writer("---")
-    if line_numbers:
-        content = add_line_numbers(content)
-    writer(content)
-    writer("")
-    writer("---")
-
-
-def print_as_xml(writer, path, content, line_numbers):
+def print_document(writer, path, content, line_numbers):
     global global_index
-    writer(f'<document index="{global_index}">')
-    writer(f"<source>{path}</source>")
-    writer("<document_content>")
     if line_numbers:
         content = add_line_numbers(content)
+    writer(f'<document path="{path}" index="{global_index}">')
     writer(content)
-    writer("</document_content>")
     writer("</document>")
     global_index += 1
-
-
-def print_as_markdown(writer, path, content, line_numbers):
-    lang = EXT_TO_LANG.get(path.split(".")[-1], "")
-    # Figure out how many backticks to use
-    backticks = "```"
-    while backticks in content:
-        backticks += "`"
-    writer(path)
-    writer(f"{backticks}{lang}")
-    if line_numbers:
-        content = add_line_numbers(content)
-    writer(content)
-    writer(f"{backticks}")
-
 
 def is_sqlite3_file(file_path):
     """Check if the given file is a SQLite3 database."""
@@ -146,8 +84,6 @@ def process_path(
     ignore_gitignore,
     ignore_patterns,
     writer,
-    claude_xml,
-    markdown,
     line_numbers=False,
     extract_sqlite=True,
 ):
@@ -156,18 +92,19 @@ def process_path(
             try:
                 schema = get_sqlite_schema(path)
                 content = f"-- SQLite3 Database Schema\n{schema}"
-                print_path(writer, path, content, claude_xml, markdown, line_numbers)
+                print_document(writer, path, content, line_numbers)
             except Exception as e:
                 warning_message = f"Warning: Error processing SQLite file {path}: {str(e)}"
                 click.echo(click.style(warning_message, fg="red"), err=True)
         else:
             try:
                 with open(path, "r") as f:
-                    print_path(writer, path, f.read(), claude_xml, markdown, line_numbers)
+                    print_document(writer, path, f.read(), line_numbers)
             except UnicodeDecodeError:
                 warning_message = f"Warning: Skipping file {path} due to UnicodeDecodeError"
                 click.echo(click.style(warning_message, fg="red"), err=True)
     elif os.path.isdir(path):
+        all_files = []
         for root, dirs, files in os.walk(path):
             if not include_hidden:
                 dirs[:] = [d for d in dirs if not d.startswith(".")]
@@ -198,43 +135,29 @@ def process_path(
             if extensions:
                 files = [f for f in files if f.endswith(extensions)]
 
-            for file in sorted(files):
+            for file in files:
                 file_path = os.path.join(root, file)
-                if file_path in processed_paths:
-                    continue
-                processed_paths.add(file_path)
-                if extract_sqlite and is_sqlite3_file(file_path):
-                    try:
-                        schema = get_sqlite_schema(file_path)
-                        content = f"-- SQLite3 Database Schema\n{schema}"
-                        print_path(
-                            writer,
-                            file_path,
-                            content,
-                            claude_xml,
-                            markdown,
-                            line_numbers,
-                        )
-                    except Exception as e:
-                        warning_message = f"Warning: Error processing SQLite file {file_path}: {str(e)}"
-                        click.echo(click.style(warning_message, fg="red"), err=True)
-                else:
-                    try:
-                        with open(file_path, "r") as f:
-                            print_path(
-                                writer,
-                                file_path,
-                                f.read(),
-                                claude_xml,
-                                markdown,
-                                line_numbers,
-                            )
-                    except UnicodeDecodeError:
-                        warning_message = (
-                            f"Warning: Skipping file {file_path} due to UnicodeDecodeError"
-                        )
-                        click.echo(click.style(warning_message, fg="red"), err=True)
+                if file_path not in processed_paths:
+                    all_files.append(file_path)
 
+        # Sort files to ensure consistent order
+        for file_path in sorted(all_files):
+            processed_paths.add(file_path)
+            if extract_sqlite and is_sqlite3_file(file_path):
+                try:
+                    schema = get_sqlite_schema(file_path)
+                    content = f"-- SQLite3 Database Schema\n{schema}"
+                    print_document(writer, file_path, content, line_numbers)
+                except Exception as e:
+                    warning_message = f"Warning: Error processing SQLite file {file_path}: {str(e)}"
+                    click.echo(click.style(warning_message, fg="red"), err=True)
+            else:
+                try:
+                    with open(file_path, "r") as f:
+                        print_document(writer, file_path, f.read(), line_numbers)
+                except UnicodeDecodeError:
+                    warning_message = f"Warning: Skipping file {file_path} due to UnicodeDecodeError"
+                    click.echo(click.style(warning_message, fg="red"), err=True)
 
 def read_paths_from_stdin(use_null_separator):
     if sys.stdin.isatty():
@@ -247,7 +170,6 @@ def read_paths_from_stdin(use_null_separator):
     else:
         paths = stdin_content.split()  # split on whitespace
     return [p for p in paths if p]
-
 
 @click.command()
 @click.argument("paths", nargs=-1, type=click.Path(exists=True))
@@ -282,20 +204,6 @@ def read_paths_from_stdin(use_null_separator):
     help="Output to a file instead of stdout",
 )
 @click.option(
-    "claude_xml",
-    "-c",
-    "--cxml",
-    is_flag=True,
-    help="Output in XML-ish format suitable for Claude's long context window.",
-)
-@click.option(
-    "markdown",
-    "-m",
-    "--markdown",
-    is_flag=True,
-    help="Output Markdown with fenced code blocks",
-)
-@click.option(
     "line_numbers",
     "-n",
     "--line-numbers",
@@ -323,56 +231,24 @@ def cli(
     ignore_gitignore,
     ignore_patterns,
     output_file,
-    claude_xml,
-    markdown,
     line_numbers,
     null,
     extract_sqlite,
 ):
     """
     Takes one or more paths to files or directories and outputs every file,
-    recursively, each one preceded with its filename like this:
-
-    \b
-        path/to/file.py
-        ----
-        Contents of file.py goes here
-        ---
-        path/to/file2.py
-        ---
-        ...
-
-    If the `--cxml` flag is provided, the output will be structured as follows:
+    recursively, in Claude XML format:
 
     \b
         <documents>
-        <document path="path/to/file1.txt">
+        <document index="1">
+        <source>path/to/file1.txt</source>
+        <document_content>
         Contents of file1.txt
-        </document>
-        <document path="path/to/file2.txt">
-        Contents of file2.txt
+        </document_content>
         </document>
         ...
         </documents>
-
-    If the `--markdown` flag is provided, the output will be structured as follows:
-
-    \b
-        path/to/file1.py
-        ```python
-        Contents of file1.py
-        ```
-
-    If the `--extract-sqlite` flag is provided, SQLite3 database files will have their schema
-    extracted instead of being skipped as binary files:
-
-    \b
-        path/to/database.sqlite
-        ---
-        -- SQLite3 Database Schema
-        -- Tables
-        CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, email TEXT);
-        ---
     """
     # Reset globals for pytest
     global global_index, processed_paths
@@ -390,25 +266,30 @@ def cli(
     if output_file:
         fp = open(output_file, "w", encoding="utf-8")
         writer = lambda s: print(s, file=fp)
-    for path in paths:
-        if not os.path.exists(path):
-            raise click.BadArgumentUsage(f"Path does not exist: {path}")
-        if claude_xml and path == paths[0]:
-            writer("<documents>")
-        process_path(
-            path,
-            extensions,
-            include_hidden,
-            ignore_files_only,
-            ignore_gitignore,
-            ignore_patterns,
-            writer,
-            claude_xml,
-            markdown,
-            line_numbers,
-            extract_sqlite,
-        )
-    if claude_xml and len(paths) > 0:
+
+    if len(paths) > 0:
+        writer("<documents>")
+        for path in paths:
+            if not os.path.exists(path):
+                raise click.BadArgumentUsage(f"Path does not exist: {path}")
+            process_path(
+                path,
+                extensions,
+                include_hidden,
+                ignore_files_only,
+                ignore_gitignore,
+                ignore_patterns,
+                writer,
+                line_numbers,
+                extract_sqlite,
+            )
         writer("</documents>")
+    else:
+        raise click.BadArgumentUsage("No paths provided")
+
     if fp:
         fp.close()
+
+# Note: Not sure if best practice
+if __name__ == "__main__":
+    cli()
