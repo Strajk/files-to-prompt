@@ -12,6 +12,7 @@ classifiers = [
 dependencies = [
     "click",
     "pathspec",
+    "pyperclip"
 ]
 
 [project.urls]
