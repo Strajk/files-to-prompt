@@ -14,6 +14,12 @@ uv run -m files_to_prompt.cli .
 - Merge #45 - gitignore implementation based on pathspec
 - Remove GitHub Actions workflow for publishing Python package; update test workflow to limit Python versions to 3.12 and 3.13.
 
+Consider:
+- ignore defaults https://github.com/TheAhmadOsman/files-to-prompt/commit/c5d5c397ad0f3282ee68387ec3d09ca46a9240c7
+- jupyer https://github.com/ncoop57/files-to-prompt/commit/6e945ab214339cb11df4f7dd78d32eed38ae900c
+- github repo https://github.com/cheuerde/files-to-prompt/commit/b66fa512cd8fde77e8938bcf8167571eb37c9a3a
+- line numbers in brackets https://github.com/omahdi/files-to-prompt/commit/ebde5f24bb84712092df390148e8710d89828e1c
+
 
 # files-to-prompt
 

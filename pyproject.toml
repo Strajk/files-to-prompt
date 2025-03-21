@@ -22,7 +22,7 @@ Issues = "https://github.com/simonw/files-to-prompt/issues"
 CI = "https://github.com/simonw/files-to-prompt/actions"
 
 [project.scripts]
-files-to-prompt = "files_to_prompt.cli:cli"
+files-to-prompt-strajk = "files_to_prompt.cli:cli"
 
 [project.optional-dependencies]
 test = ["pytest"]
