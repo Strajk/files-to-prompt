@@ -8,3 +8,6 @@ venv
 *.egg-info
 .DS_Store
 build/
+
+# Test repositories folder
+tests/test_repos/
